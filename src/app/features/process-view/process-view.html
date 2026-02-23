@@ -1,7 +1,55 @@
-<h1>C3</h1>
-<div class="process">
-  <p><strong>z = w·x + b</strong></p>
-  <p>Peso (w): {{config.weight}}</p>
-  <p>Bias (b): {{config.bias}}</p>
-  <p>Attivazione: {{config.activation}}</p>
+<div class="process-container">
+  <!-- Parametri in riga -->
+  <div class="params-row">
+    <div class="param-card">
+      <span class="param-icon">⚖️</span>
+      <span class="param-label">Weight (w)</span>
+      <span class="param-value" [style.color]="getWeightColor()">{{config.weight | number:'1.2-2'}}</span>
+    </div>
+
+    <div class="param-card">
+      <span class="param-icon">➕</span>
+      <span class="param-label">Bias (b)</span>
+      <span class="param-value" [style.color]="getBiasColor()">{{config.bias | number:'1.2-2'}}</span>
+    </div>
+
+    <div class="param-card">
+      <span class="param-icon">⚡</span>
+      <span class="param-label">Activation</span>
+      <span class="param-value activation-badge" [style.background]="getActivationColor()">
+        {{config.activation | uppercase}}
+      </span>
+    </div>
+  </div>
+
+  <!-- Formula in evidenza -->
+  <div class="formula-banner">
+    <code>z = {{config.weight}}·x + {{config.bias}}</code>
+    <span class="arrow">→</span>
+    <code class="activation-code" [style.background]="getActivationColorLight()">
+      {{getActivationFormula()}}
+    </code>
+  </div>
+
+  <!-- Spiegazione della funzione di attivazione -->
+  <div class="explanation-card" [style.border-left-color]="getActivationColor()">
+    <div class="explanation-header">
+      <span class="explanation-icon">{{getActivationIcon()}}</span>
+      <span class="explanation-title">{{getActivationName()}} - Funzionamento</span>
+    </div>
+    <p class="explanation-text">{{getActivationExplanation()}}</p>
+    
+    <div class="behavior-tags">
+      <span class="tag" *ngFor="let tag of getActivationTags()">{{tag}}</span>
+    </div>
+
+    <!-- Esempio concreto -->
+    <div class="example-box">
+      <span class="example-label">Example with x = 2:</span>
+      <code class="example-code">
+        z = {{config.weight}}·2 + {{config.bias}} = {{config.weight * 2 + config.bias | number:'1.2-2'}}
+        → {{getActivationExample()}}
+      </code>
+    </div>
+  </div>
 </div>

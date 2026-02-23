@@ -11,14 +11,16 @@
     [transformedPoints]="transformedPoints">
   </app-visualization>
 
+    <app-process-view
+    [config]="config">
+  </app-process-view>
+
+  
   <app-task-advisor 
   [config]="config" 
   (configChange)="updateConfig($event)"
   >
 </app-task-advisor>
 
-  <app-process-view
-    [config]="config">
-  </app-process-view>
 
 </div>

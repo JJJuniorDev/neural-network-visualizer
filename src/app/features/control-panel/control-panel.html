@@ -1,64 +1,143 @@
-  <!-- Accordion Menu ORIZZONTALE -->
-  <div class="accordion-horizontal">
-    <!-- Sezione Pesi e Bias -->
-    <div class="accordion-item">
-      <div class="accordion-header" (click)="toggleSection('weights')">
-        <span class="header-icon">⚖️</span>
-        <span class="header-title">Weights</span>
-        <span class="header-arrow">{{expandedSections['weights'] ? '▼' : '▶'}}</span>
-      </div>
-      <div class="accordion-content" [class.expanded]="expandedSections['weights']">
-        <div class="control-group">
-          <div class="control-row">
-            <div class="control-label">
-              <label for="weight">w</label>
-            </div>
-            <div class="slider-container">
-              <input 
-                type="range" 
-                id="weight"
-                [min]="minWeight" 
-                [max]="maxWeight" 
-                [step]="weightStep"
-                [(ngModel)]="config.weight"
-                (input)="update()"
-                class="slider">
-            </div>
-            <span class="value-badge">{{config.weight | number:'1.2-2'}}</span>
+<!-- Accordion Menu ORIZZONTALE -->
+<div class="accordion-horizontal">
+  <!-- Sezione Pesi e Bias -->
+  <div class="accordion-item">
+    <div class="accordion-header" (click)="toggleSection('weights')">
+      <span class="header-icon">⚖️</span>
+      <span class="header-title">Weights</span>
+      <span class="header-badge">w={{config.weight | number:'1.2-2'}}, b={{config.bias | number:'1.2-2'}}</span>
+      <span class="header-arrow">{{expandedSections['weights'] ? '▼' : '▶'}}</span>
+    </div>
+    <div class="accordion-content" [class.expanded]="expandedSections['weights']">
+      <div class="control-group">
+        <div class="control-row">
+          <div class="control-label">
+            <label for="weight">w</label>
           </div>
-          <div class="control-row">
-            <div class="control-label">
-              <label for="bias">b</label>
-            </div>
-            <div class="slider-container">
-              <input 
-                type="range" 
-                id="bias"
-                [min]="minBias" 
-                [max]="maxBias" 
-                [step]="biasStep"
-                [(ngModel)]="config.bias"
-                (input)="update()"
-                class="slider">
-            </div>
-            <span class="value-badge">{{config.bias | number:'1.2-2'}}</span>
+          <div class="slider-container">
+            <input 
+              type="range" 
+              id="weight"
+              [min]="minWeight" 
+              [max]="maxWeight" 
+              [step]="weightStep"
+              [(ngModel)]="config.weight"
+              (input)="update()"
+              class="slider">
           </div>
+          <span class="value-badge">{{config.weight | number:'1.2-2'}}</span>
+        </div>
+        <div class="control-row">
+          <div class="control-label">
+            <label for="bias">b</label>
+          </div>
+          <div class="slider-container">
+            <input 
+              type="range" 
+              id="bias"
+              [min]="minBias" 
+              [max]="maxBias" 
+              [step]="biasStep"
+              [(ngModel)]="config.bias"
+              (input)="update()"
+              class="slider">
+          </div>
+          <span class="value-badge">{{config.bias | number:'1.2-2'}}</span>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Sezione Funzione di Attivazione -->
-    <div class="accordion-item">
-      <div class="accordion-header" (click)="toggleSection('activation')">
-        <span class="header-icon">⚡</span>
-        <span class="header-title">Activation</span>
-        <span class="header-badge">{{getActivationName(config.activation)}}</span>
-        <span class="header-arrow">{{expandedSections['activation'] ? '▼' : '▶'}}</span>
-      </div>
-      <div class="accordion-content" [class.expanded]="expandedSections['activation']">
+  <!-- Sezione Funzione di Attivazione -->
+  <div class="accordion-item">
+    <div class="accordion-header" (click)="toggleSection('activation')">
+      <span class="header-icon">⚡</span>
+      <span class="header-title">Activation</span>
+      <span class="header-badge">{{getActivationName(config.activation)}}</span>
+      <span class="header-arrow">{{expandedSections['activation'] ? '▼' : '▶'}}</span>
+    </div>
+    <div class="accordion-content" [class.expanded]="expandedSections['activation']">
+      
+        
+    <!-- Navigazione categorie -->
+    <div class="category-nav">
+      <button class="category-btn" 
+              [class.active]="activeCategory === 'base'"
+              (click)="setActiveCategory('base')">
+        <span class="category-icon">📌</span>
+        <span class="category-name">Base</span>
+      </button>
+      <button class="category-btn" 
+              [class.active]="activeCategory === 'relu'"
+              (click)="setActiveCategory('relu')">
+        <span class="category-icon">⚡</span>
+        <span class="category-name">ReLU</span>
+      </button>
+      <button class="category-btn" 
+              [class.active]="activeCategory === 'modern'"
+              (click)="setActiveCategory('modern')">
+        <span class="category-icon">🚀</span>
+        <span class="category-name">Modern</span>
+      </button>
+      <button class="category-btn" 
+              [class.active]="activeCategory === 'special'"
+              (click)="setActiveCategory('special')">
+        <span class="category-icon">🎯</span>
+        <span class="category-name">Special</span>
+      </button>
+    </div>
+
+      
+    <!-- Contenuto categoria attiva -->
+    <div class="category-content">
+      <!-- Funzioni Base -->
+      <div class="activation-group" *ngIf="activeCategory === 'base'">
+        <div class="group-label">📌 Base Functions</div>
         <div class="activation-grid">
           <div class="activation-card" 
-               *ngFor="let act of activationFunctions"
+               *ngFor="let act of getBaseActivations()"
+               [class.selected]="config.activation === act.value"
+               (click)="selectActivation(act.value)">
+            <div class="activation-icon">{{act.icon}}</div>
+            <div class="activation-name">{{act.name}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Famiglia ReLU -->
+      <div class="activation-group" *ngIf="activeCategory === 'relu'">
+        <div class="group-label">⚡ ReLU Family</div>
+        <div class="activation-grid">
+          <div class="activation-card" 
+               *ngFor="let act of getReLUFamilies()"
+               [class.selected]="config.activation === act.value"
+               (click)="selectActivation(act.value)">
+            <div class="activation-icon">{{act.icon}}</div>
+            <div class="activation-name">{{act.name}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Funzioni Moderne -->
+      <div class="activation-group" *ngIf="activeCategory === 'modern'">
+        <div class="group-label">🚀 Modern Functions</div>
+        <div class="activation-grid">
+          <div class="activation-card" 
+               *ngFor="let act of getModernActivations()"
+               [class.selected]="config.activation === act.value"
+               (click)="selectActivation(act.value)">
+            <div class="activation-icon">{{act.icon}}</div>
+            <div class="activation-name">{{act.name}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Funzioni Speciali -->
+      <div class="activation-group" *ngIf="activeCategory === 'special'">
+        <div class="group-label">🎯 Special Functions</div>
+        <div class="activation-grid">
+          <div class="activation-card" 
+               *ngFor="let act of getSpecialActivations()"
                [class.selected]="config.activation === act.value"
                (click)="selectActivation(act.value)">
             <div class="activation-icon">{{act.icon}}</div>
@@ -67,32 +146,5 @@
         </div>
       </div>
     </div>
-
-    <!-- Sezione Dataset -->
-    <div class="accordion-item">
-      <div class="accordion-header" (click)="toggleSection('dataset')">
-        <span class="header-icon">📊</span>
-        <span class="header-title">Data</span>
-        <span class="header-badge">{{numberOfPoints}} pts</span>
-        <span class="header-arrow">{{expandedSections['dataset'] ? '▼' : '▶'}}</span>
-      </div>
-      <div class="accordion-content" [class.expanded]="expandedSections['dataset']">
-        <div class="control-row">
-          <div class="control-label">
-            <label for="points">n°</label>
-          </div>
-          <div class="slider-container">
-            <input 
-              type="range" 
-              id="points"
-              min="10" 
-              max="500" 
-              step="10"
-              [(ngModel)]="numberOfPoints"
-              class="slider">
-          </div>
-          <span class="value-badge">{{numberOfPoints}}</span>
-        </div>
-      </div>
-    </div>
   </div>
+</div>

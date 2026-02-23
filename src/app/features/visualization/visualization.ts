@@ -1,13 +1,12 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, ViewChild, SimpleChanges } from '@angular/core';
 import { Point } from '../../models/point.model';
-import { Chart, ChartConfiguration, ScatterController, LinearScale, PointElement, Tooltip, Legend, Title, CategoryScale, Filler } from 'chart.js';
-import { DecimalPipe } from '@angular/common';
-Chart.register(ScatterController, LinearScale, PointElement, Tooltip, Legend, Title, CategoryScale, Filler);
+import { Chart, ChartConfiguration, ScatterController, LinearScale, PointElement, Tooltip, Legend, Title } from 'chart.js';
+
+Chart.register(ScatterController, LinearScale, PointElement, Tooltip, Legend, Title);
 
 @Component({
   selector: 'app-visualization',
   templateUrl: './visualization.html',
-  imports: [DecimalPipe],
   styleUrls: ['./visualization.css'],
   standalone: true
 })
@@ -22,17 +21,16 @@ export class Visualization implements AfterViewInit, OnChanges {
   private charts: Chart[] = [];
   private viewInitialized = false;
   private animationId: number | null = null;
-   animationProgress = 0;
+  animationProgress = 0;
   private readonly MAX_POINTS = 100;
-  private readonly ANIMATION_SPEED = 0.005; // Lento e fluido
+  private readonly ANIMATION_SPEED = 0.005;
   
-  // Colori semplici ed eleganti
   private readonly COLORS = {
-    before: '#3a86ff',    // Blu brillante
-    after: '#ff006e',     // Rosa/fucsia
+    before: '#3a86ff',
+    after: '#ff006e',
     background: '#f8f9fa',
-    grid: '#dee2e6',
-    connection: 'rgba(108, 117, 125, 0.3)'
+    grid: 'rgba(222, 226, 230, 0.3)',
+    connection: 'rgba(108, 117, 125, 0.2)'
   };
 
   ngAfterViewInit() {
@@ -57,12 +55,12 @@ export class Visualization implements AfterViewInit, OnChanges {
   }
 
   private initializeCharts() {
-    this.createChart('before', this.chartBeforeCanvas, this.originalPoints, this.COLORS.before, '📥 Input Space');
-    this.createChart('after', this.chartAfterCanvas, this.transformedPoints, this.COLORS.after, '🎯 After Activation');
+    this.createChart('before', this.chartBeforeCanvas, this.originalPoints, this.COLORS.before, '📥 Input');
+    this.createChart('after', this.chartAfterCanvas, this.transformedPoints, this.COLORS.after, '🎯 Output');
     this.startAnimation();
   }
 
-  private createChart(type: string, canvasRef: ElementRef<HTMLCanvasElement>, data: Point[], color: string, title: string) {
+  private createChart(type: string, canvasRef: ElementRef<HTMLCanvasElement>, data: Point[], color: string, label: string) {
     const ctx = canvasRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
@@ -70,57 +68,52 @@ export class Visualization implements AfterViewInit, OnChanges {
       type: 'scatter',
       data: {
         datasets: [{
-          label: title,
+          label: label,
           data: this.getLimitedPoints(data),
           backgroundColor: color,
           pointRadius: 8,
-          pointHoverRadius: 12,
+          pointHoverRadius: 14,
           pointBorderColor: 'white',
           pointBorderWidth: 2,
-          pointStyle: 'circle'
+          pointStyle: 'circle',
+          hoverBackgroundColor: color,
+          hoverBorderColor: '#ffffff',
+          hoverBorderWidth: 3
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-            labels: {
-              font: { size: 14, weight: 'bold' },
-              color: '#212529',
-              usePointStyle: true,
-              padding: 15
-            }
-          },
+          legend: { display: false },
           tooltip: {
             backgroundColor: '#212529',
-            titleFont: { size: 14 },
-            bodyFont: { size: 13 },
+            titleFont: { size: 13, weight: 'bold' },
+            bodyFont: { size: 12 },
+            padding: 10,
+            cornerRadius: 8,
             callbacks: {
               label: (context) => {
                 const point = context.raw as Point;
-                return [`(${point.x.toFixed(2)}, ${point.y.toFixed(2)})`];
+                return [`x: ${point.x.toFixed(2)}`, `y: ${point.y.toFixed(2)}`];
               }
             }
-          },
-          title: {
-            display: true,
-            text: title,
-            font: { size: 18, weight: 600 },
-            padding: { top: 15, bottom: 15 },
-            color: '#212529'
           }
         },
         scales: {
           x: {
             grid: { color: this.COLORS.grid },
-            title: { display: true, text: 'X Coordinate', font: { weight: 500 } }
+            ticks: { display: true, color: '#adb5bd' }
           },
           y: {
             grid: { color: this.COLORS.grid },
-            title: { display: true, text: 'Y Coordinate', font: { weight: 500 } }
+            ticks: { display: true, color: '#adb5bd' }
+          }
+        },
+        elements: {
+          point: {
+            hoverRadius: 14,
+            hoverBorderWidth: 3
           }
         }
       }
@@ -135,24 +128,16 @@ export class Visualization implements AfterViewInit, OnChanges {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Imposta dimensioni canvas
     canvas.width = canvas.clientWidth || 800;
-    canvas.height = canvas.clientHeight || 500;
+    canvas.height = canvas.clientHeight || 550;
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Disegna sfondo e griglia
       this.drawBackground(ctx, canvas);
-      
-      // Disegna la trasformazione
       this.drawTransformation(ctx, canvas);
       
-      // Avanza lentamente
       if (this.animationProgress < 1) {
         this.animationProgress += this.ANIMATION_SPEED;
-      } else {
-        this.animationProgress = 1; // Fermati alla fine
       }
       
       this.animationId = requestAnimationFrame(animate);
@@ -162,25 +147,20 @@ export class Visualization implements AfterViewInit, OnChanges {
   }
 
   private drawBackground(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
-    // Sfondo pulito
-    ctx.fillStyle = this.COLORS.background;
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Griglia leggera
     ctx.strokeStyle = this.COLORS.grid;
     ctx.lineWidth = 0.5;
     
-    // Linee verticali
     for (let i = 0; i <= 10; i++) {
       const x = (i / 10) * canvas.width;
       ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, canvas.height);
-      ctx.strokeStyle = 'rgba(0,0,0,0.05)';
       ctx.stroke();
     }
     
-    // Linee orizzontali
     for (let i = 0; i <= 8; i++) {
       const y = (i / 8) * canvas.height;
       ctx.beginPath();
@@ -192,98 +172,57 @@ export class Visualization implements AfterViewInit, OnChanges {
 
   private drawTransformation(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     const count = Math.min(this.originalPoints?.length || 0, this.transformedPoints?.length || 0, this.MAX_POINTS);
-    
-    // Mostra connessioni solo per alcuni punti (per non appesantire)
     const showConnectionsFor = Math.min(15, count);
     
     for (let i = 0; i < count; i++) {
       const original = this.mapToCanvas(this.originalPoints[i], canvas);
       const transformed = this.mapToCanvas(this.transformedPoints[i], canvas);
       
-      // Posizione interpolata
       const x = original.x + (transformed.x - original.x) * this.animationProgress;
       const y = original.y + (transformed.y - original.y) * this.animationProgress;
       
-      // Disegna linea di connessione (solo per i primi punti)
       if (i < showConnectionsFor) {
         ctx.beginPath();
         ctx.moveTo(original.x, original.y);
         ctx.lineTo(transformed.x, transformed.y);
         ctx.strokeStyle = this.COLORS.connection;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.5;
         ctx.setLineDash([5, 3]);
         ctx.stroke();
         ctx.setLineDash([]);
       }
       
-      // Calcola colore in base al progresso
-      const color = this.interpolateColor(this.animationProgress);
+      const color = this.animationProgress < 0.5 ? this.COLORS.before : this.COLORS.after;
       
-      // Disegna punto con glow leggero
+      // Glow effect
       ctx.shadowColor = color;
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = 15;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      
+      // Punto principale con gradiente
+      const gradient = ctx.createRadialGradient(x-2, y-2, 2, x, y, 12);
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(1, 'rgba(255,255,255,0.8)');
       
       ctx.beginPath();
-      ctx.arc(x, y, 6, 0, Math.PI * 2);
-      ctx.fillStyle = color;
+      ctx.arc(x, y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
       ctx.fill();
       
       // Bordo bianco
       ctx.shadowBlur = 5;
       ctx.strokeStyle = 'white';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.5;
       ctx.stroke();
       
-      // Aggiungi etichetta per i primi punti
-      if (i < showConnectionsFor && this.animationProgress < 0.95) {
-        ctx.shadowBlur = 0;
-        ctx.font = 'bold 12px "Segoe UI"';
-        ctx.fillStyle = '#495057';
-        ctx.fillText(`P${i+1}`, x + 12, y - 8);
-      }
-    }
-    
-    // Reset shadow
-    ctx.shadowBlur = 0;
-    
-    // Mostra stato della trasformazione
-    ctx.font = 'bold 16px "Segoe UI"';
-    ctx.fillStyle = '#212529';
-    ctx.shadowBlur = 0;
-    
-    if (this.animationProgress < 0.1) {
-      ctx.fillText('🔵 Stato iniziale', 20, 40);
-    } else if (this.animationProgress > 0.9) {
-      ctx.fillText('🔴 Trasformazione completata', 20, 40);
-    } else {
-      const percent = Math.round(this.animationProgress * 100);
-      ctx.fillText(`Trasformazione in corso... ${percent}%`, 20, 40);
-    }
-    
-    // Legenda semplice
-    ctx.font = '12px "Segoe UI"';
-    ctx.fillStyle = this.COLORS.before;
-    ctx.fillText('● Punto originale', 20, canvas.height - 40);
-    
-    ctx.fillStyle = this.COLORS.after;
-    ctx.fillText('● Punto trasformato', 20, canvas.height - 20);
-    
-    ctx.fillStyle = this.COLORS.connection;
-    ctx.fillText('┅ Percorso della trasformazione', 20, canvas.height - 60);
-  }
-
-  private interpolateColor(progress: number): string {
-    // Interpolazione graduale da blu a rosa
-    if (progress < 0.5) {
-      return this.COLORS.before;
-    } else {
-      return this.COLORS.after;
+      // Reset ombra
+      ctx.shadowBlur = 0;
     }
   }
 
   private mapToCanvas(point: Point, canvas: HTMLCanvasElement): { x: number, y: number } {
     const padding = 60;
-    // Adatta il range in base ai tuoi dati
     const xRange = { min: -5, max: 5 };
     const yRange = { min: -5, max: 5 };
     
@@ -298,10 +237,10 @@ export class Visualization implements AfterViewInit, OnChanges {
   }
 
   private updateCharts() {
-    this.charts.forEach(chart => {
-      if (chart.config.data?.datasets[0]?.label?.includes('Input')) {
+    this.charts.forEach((chart, index) => {
+      if (index === 0) {
         chart.data.datasets[0].data = this.getLimitedPoints(this.originalPoints);
-      } else if (chart.config.data?.datasets[0]?.label?.includes('Activation')) {
+      } else if (index === 1) {
         chart.data.datasets[0].data = this.getLimitedPoints(this.transformedPoints);
       }
       chart.update();
@@ -310,17 +249,10 @@ export class Visualization implements AfterViewInit, OnChanges {
 
   private resetAndStartAnimation() {
     this.animationProgress = 0;
-    if (!this.animationId) {
-      this.startAnimation();
-    }
   }
 
-  // Metodi pubblici per i controlli
   public playAnimation() {
     this.animationProgress = 0;
-    if (!this.animationId) {
-      this.startAnimation();
-    }
   }
 
   public resetAnimation() {
