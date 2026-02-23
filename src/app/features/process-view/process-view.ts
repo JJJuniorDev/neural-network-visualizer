@@ -124,30 +124,25 @@ export class ProcessView {
     switch(this.config.activation) {
       case 'linear':
         return `📚 **SPIEGAZIONE DUMMY**:
-La funzione lineare è come una "copia e incolla" matematica: qualunque valore entra, lo stesso valore esce. 
-Immagina una porta trasparente: ciò che vedi da un lato è identico dall'altro. Il peso (w) decide quanto 
+La funzione lineare è come un copia e incolla: qualunque valore entra, lo stesso valore esce. 
+Ciò che vedi da un lato è identico dall'altro. Il peso (w) decide quanto 
 inclinare la linea, il bias (b) decide dove la linea incrocia l'asse verticale.
 
-📐 **SPIEGAZIONE ACCADEMICA**:
-La funzione di attivazione lineare è definita come f(x) = x, rendendola un mapping identità. 
-Nel contesto di un neurone artificiale, l'output è esattamente il potenziale di attivazione 
-z = w·x + b, senza alcuna trasformazione non lineare. Questo tipo di attivazione è fondamentale 
-nei layer di output per problemi di regressione, dove si richiedono valori reali non limitati. 
+📐 **EXTRA**:
+Questo tipo di attivazione è fondamentale nei layer di output per problemi di regressione, dove si richiedono valori reali non limitati. 
 Tuttavia, l'assenza di non-linearità limita la capacità della rete di apprendere relazioni complesse, 
 rendendo una rete con solo attivazioni lineari equivalente a un modello lineare, indipendentemente 
 dal numero di layer (composizione di funzioni lineari = funzione lineare).`;
       
       case 'sigmoid':
         return `📚 **SPIEGAZIONE DUMMY**:
-La sigmoide è come un "compressore magico" che prende qualsiasi numero e lo schiaccia tra 0 e 1. 
+La sigmoide è come un compressore che prende qualsiasi numero e lo schiaccia tra 0 e 1. 
 Numeri grandi positivi diventano quasi 1, numeri grandi negativi diventano quasi 0. 
 È perfetta quando vuoi esprimere una probabilità: "quanto sono sicuro che questo sia un gatto?" 
 (0 = non lo è, 1 = lo è sicuramente). La curva a S trasforma valori lineari in decisioni graduali.
 
 📐 **SPIEGAZIONE ACCADEMICA**:
-La funzione sigmoide, definita come σ(z) = 1/(1 + e⁻ᶻ), mappa l'intero asse reale nell'intervallo (0, 1), 
-con proprietà fondamentale σ(-z) = 1 - σ(z). La sua derivata, σ'(z) = σ(z)(1 - σ(z)), raggiunge il massimo 
-a z=0 (0.25) e tende a zero per |z| → ∞, causando il problema del vanishing gradient nelle reti profonde. 
+La funzione sigmoide mappa l'intero asse reale nell'intervallo (0, 1), e  può causare il problema del vanishing gradient nelle reti profonde. 
 Storicamente utilizzata nei perceptron e nei layer di output per classificazione binaria, la sigmoide 
 fornisce output interpretabili come probabilità posteriori P(y=1|x). Tuttavia, l'output non centrato a zero 
 può causare oscillazioni durante la discesa del gradiente e la saturazione dei neuroni.`;
@@ -160,13 +155,11 @@ se è negativo, lo trasforma in zero. Immagina un rubinetto che lascia scorrere 
 vengono spenti, creando una rappresentazione "sparsa" (pochi neuroni attivi contemporaneamente).
 
 📐 **SPIEGAZIONE ACCADEMICA**:
-La Rectified Linear Unit (ReLU), definita come f(z) = max(0, z), introduce non-linearità mantenendo 
-il gradiente costante (1) per z > 0, mitigando il problema del vanishing gradient rispetto alle funzioni 
-saturanti. La sua derivata è f'(z) = 1 per z > 0, 0 per z < 0 (non differenziabile in z=0, ma implementata 
-con subgradiente 0 o 1). ReLU produce rappresentazioni sparse (attivazione di ≈50% dei neuroni), 
+La Rectified Linear Unit (ReLU) introduce non-linearità mantenendo il gradiente costante (1) per z > 0, mitigando il problema del vanishing gradient rispetto alle funzioni 
+saturanti. La sua derivata è f'(z) = 1 per z > 0, 0 per z < 0.
+ ReLU produce rappresentazioni sparse (attivazione di ≈50% dei neuroni), 
 migliorando l'efficienza computazionale. Tuttavia, soffre del problema "dying ReLU" quando i gradienti 
-negativi azzerano permanentemente i neuroni. Varianti come LeakyReLU (f(z) = max(αz, z) con α piccolo) 
-mitigano questo problema permettendo gradienti negativi non nulli.`;
+negativi azzerano permanentemente i neuroni. Varianti come LeakyReLU mitigano questo problema permettendo gradienti negativi non nulli.`;
       
       case 'tanh':
         return `📚 **SPIEGAZIONE DUMMY**:
@@ -176,11 +169,9 @@ Numeri grandi positivi diventano +1, numeri grandi negativi diventano -1, e zero
 come le differenze o i bilanciamenti. La curva è centrata a zero, il che aiuta l'apprendimento.
 
 📐 **SPIEGAZIONE ACCADEMICA**:
-La tangente iperbolica, tanh(z) = (eᶻ - e⁻ᶻ)/(eᶻ + e⁻ᶻ), è una funzione dispari che mappa l'input 
-nell'intervallo (-1, 1), con tanh(0) = 0. Rispetto alla sigmoide, tanh è centrata a zero (output medio zero), 
-proprietà che favorisce la convergenza durante la backpropagation riducendo lo shift dei gradienti. 
-La sua derivata è tanh'(z) = 1 - tanh²(z), con gradiente massimo 1 in z=0. Tanh combina la non-linearità 
-con output simmetrici, rendendola preferibile alla sigmoide nei layer nascosti quando i dati hanno media zero. 
+La tangente iperbolica è una funzione dispari che mappa l'input nell'intervallo (-1, 1), con tanh(0) = 0. 
+Rispetto alla sigmoide, tanh è centrata a zero (output medio zero), proprietà che favorisce la convergenza durante la backpropagation riducendo lo shift dei gradienti. 
+Tanh combina la non-linearità con output simmetrici, rendendola preferibile alla sigmoide nei layer nascosti quando i dati hanno media zero. 
 Tuttavia, soffre anch'essa di saturazione per |z| grandi, con conseguente vanishing gradient nelle reti profonde.`;
 
       case 'leaky_relu':
@@ -190,9 +181,8 @@ lascia passare una piccola quantità (1%). I neuroni negativi non muoiono mai co
 mantenendo sempre un piccolo flusso di informazioni.
 
 📐 **SPIEGAZIONE ACCADEMICA**:
-Leaky ReLU (f(x) = max(αx, x) con α=0.01) introduce una pendenza piccola ma non nulla per x<0, 
-garantendo gradienti non nulli anche per input negativi. Risolve il problema "dying ReLU" 
-mantenendo l'efficienza computazionale. Il parametro α è tipicamente fissato a 0.01, 
+Leaky ReLU introduce una pendenza piccola ma non nulla per x<0, garantendo gradienti non nulli anche per input negativi.
+Risolve il problema "dying ReLU" mantenendo l'efficienza computazionale. Il parametro α è tipicamente fissato a 0.01, 
 ma può essere ottimizzato.`;
       
       case 'prelu':
@@ -211,8 +201,7 @@ ELU è come ReLU ma con una transizione morbida per i valori negativi: invece di
 c'è una curva liscia che tende gradualmente a -α. Questo rende l'apprendimento più stabile.
 
 📐 **SPIEGAZIONE ACCADEMICA**:
-Exponential Linear Unit (ELU) definisce f(x) = x per x>0, α(eˣ-1) per x≤0. La transizione liscia in x=0 
-e la saturazione verso -α per x→ -∞ producono output medi più vicini a zero, accelerando la convergenza 
+Exponential Linear Unit (ELU). La transizione liscia in x=0 e la saturazione verso -α per x→ -∞ producono output medi più vicini a zero, accelerando la convergenza 
 e riducendo il bias shift.`;
       
       case 'selu':
@@ -241,7 +230,7 @@ Mish è come Swish ma ancora più raffinato: crea una curva più dolce e continu
 permettendo alle informazioni di fluire meglio attraverso la rete.
 
 📐 **SPIEGAZIONE ACCADEMICA**:
-Mish (f(x) = x·tanh(softplus(x))) è auto-regularizzante e mantiene piccole quantità di informazioni negative, 
+Mish è auto-regularizzante e mantiene piccole quantità di informazioni negative, 
 migliorando la propagazione del gradiente. In benchmark recenti, Mish ha superato Swish e ReLU 
 in diverse architetture profonde.`;
       
@@ -261,7 +250,7 @@ Softplus è come una ReLU "morbida": invece di uno scalino netto a zero, la curv
 non diventando mai completamente zero.
 
 📐 **SPIEGAZIONE ACCADEMICA**:
-Softplus (f(x) = ln(1+eˣ)) è un'approssimazione liscia e differenziabile di ReLU. 
+Softplus è un'approssimazione liscia e differenziabile di ReLU. 
 Mantiene la proprietà di essere sempre positiva ma con gradienti definiti ovunque, 
 utile in contesti dove serve differenziabilità stretta.`;
       
@@ -272,7 +261,7 @@ ma gli altri hanno comunque la loro "piccola chance". È come una gara dove tutt
 una fetta della torta, ma il vincitore prende la fetta più grande.
 
 📐 **SPIEGAZIONE ACCADEMICA**:
-Softmax normalizza un vettore in distribuzione di probabilità: σ(zᵢ) = eᶻⁱ/∑ⱼeᶻʲ. 
+Softmax normalizza un vettore in distribuzione di probabilità, enfatizzando il massimo. 
 È l'attivazione standard per il layer di output in problemi di classificazione multi-classe, 
 producendo output interpretabili come probabilità P(y=i|x). La funzione esponenziale enfatizza 
 le differenze tra i valori, rendendo il massimo più pronunciato.`;

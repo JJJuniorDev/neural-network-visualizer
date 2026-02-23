@@ -1,13 +1,16 @@
-<!-- <div class="container">
+<p>home works!</p>
+<div class="home-container">
+  <!-- Pulsante per andare alla guida -->
   <div class="guide-nav">
     <button class="guide-btn" (click)="goToDatasetGuide()">
       <span class="btn-icon">🔍</span>
       <span class="btn-text">Dataset Shape Guide</span>
       <span class="btn-arrow">→</span>
     </button>
-  </div> -->
-  <router-outlet></router-outlet>
-  <!-- <app-control-panel
+  </div>
+
+  <!-- Componenti principali -->
+  <app-control-panel
     [config]="config"
     (configChange)="updateConfig($event)"
     (generate)="generateData($event)">
@@ -18,16 +21,12 @@
     [transformedPoints]="transformedPoints">
   </app-visualization>
 
-    <app-process-view
+  <app-process-view
     [config]="config">
   </app-process-view>
 
-  
   <app-task-advisor 
-  [config]="config" 
-  (configChange)="updateConfig($event)"
-  >
-</app-task-advisor>
-
-
-</div> -->
+    [config]="config" 
+    (configChange)="updateConfig($event)">
+  </app-task-advisor>
+</div>

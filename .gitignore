@@ -37,3 +37,5 @@ pnpm-debug.log*
 .DS_Store
 npm-debug.log
 yarn-error.log
+
+.vercel
