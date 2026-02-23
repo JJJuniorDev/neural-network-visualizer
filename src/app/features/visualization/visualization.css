@@ -1,0 +1,262 @@
+/* Variabili colori */
+:host {
+  --before-color: #3a86ff;
+  --after-color: #ff006e;
+  --bg-color: #f8f9fa;
+  --text-color: #212529;
+  --text-light: #6c757d;
+  --card-bg: #ffffff;
+  --border-radius: 20px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 20px 40px rgba(58, 134, 255, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Container principale */
+.visualization-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: var(--bg-color);
+  min-height: 60vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Griglia */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+/* Card */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: var(--transition);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.card.full-width {
+  grid-column: span 2;
+}
+
+/* Card header */
+.card-header {
+  padding: 1.5rem 1.5rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+/* 
+.card-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+} */
+
+/* Badge */
+.badge {
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: white;
+}
+
+.badge.before {
+  background: var(--before-color);
+}
+
+.badge.after {
+  background: var(--after-color);
+}
+
+/* Canvas wrapper */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  padding: 1rem;
+}
+
+.canvas-wrapper.animated {
+  height: 450px;
+}
+
+.canvas-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 12px;
+}
+
+/* Card footer */
+.card-footer {
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-footer p {
+  margin: 0.5rem 0 0;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.description {
+  background: rgba(58, 134, 255, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+  font-style: italic;
+}
+
+/* Controlli */
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+  background: transparent;
+  color: var(--text-color);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--before-color), var(--after-color));
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(255, 0, 110, 0.3);
+}
+
+.btn-outline {
+  border: 1px solid var(--text-light);
+}
+
+.btn-outline:hover {
+  background: #f1f3f5;
+}
+
+.btn-text {
+  padding: 0.4rem 1rem;
+  background: #f1f3f5;
+  border-radius: 20px;
+}
+
+.btn-text:hover {
+  background: #e9ecef;
+}
+
+/* Progress bar */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--before-color), var(--after-color));
+  border-radius: 4px;
+  transition: width 0.1s linear;
+}
+
+.progress-text {
+  font-weight: 600;
+  color: var(--text-color);
+  min-width: 45px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card.full-width {
+    grid-column: span 1;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+
+@media (max-width: 600px) {
+  .visualization-container {
+    padding: 1rem;
+  }
+  
+  .controls {
+    flex-wrap: wrap;
+  }
+}
+
+/* Animazioni */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Tooltip personalizzato */
+::ng-deep .chartjs-tooltip {
+  background: var(--text-color) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  color: white !important;
+}

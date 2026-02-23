@@ -1,0 +1,68 @@
+<div class="visualization-container">
+  <!-- Header semplice -->
+  <div class="header">
+    <p class="subtitle">🧠 Osserva come i punti si trasformano attraverso la funzione di attivazione</p>
+  </div>
+
+  <!-- Griglia principale -->
+  <div class="grid">
+    <!-- Prima card: input -->
+    <div class="card">
+      <div class="card-header">
+        <span class="badge before">Prima dell'attivazione</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas #chartBeforeCanvas></canvas>
+      </div>
+      <div class="card-footer">
+        <p>Punti nello spazio di input originale</p>
+      </div>
+    </div>
+
+    <!-- Seconda card: output -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🎯 After Activation</h2>
+        <span class="badge after">Dopo l'attivazione</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas #chartAfterCanvas></canvas>
+      </div>
+      <div class="card-footer">
+        <p>Punti trasformati dalla funzione di attivazione</p>
+      </div>
+    </div>
+
+    <!-- Terza card: animazione (full width) -->
+    <div class="card full-width">
+      <div class="card-header">
+        <h2>✨ Trasformazione Animata</h2>
+        <div class="controls">
+          <button class="btn btn-primary" (click)="playAnimation()">
+            <span>▶</span> Riparti
+          </button>
+          <button class="btn btn-outline" (click)="resetAnimation()">
+            <span>↺</span> Reset
+          </button>
+          <button class="btn btn-text" (click)="showBefore()">🔵 Prima</button>
+          <button class="btn btn-text" (click)="showAfter()">🔴 Dopo</button>
+        </div>
+      </div>
+      <div class="canvas-wrapper animated">
+        <canvas #chartAnimatedCanvas></canvas>
+      </div>
+      <div class="card-footer">
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="animationProgress * 100"></div>
+          </div>
+          <span class="progress-text">{{ (animationProgress * 100) | number:'1.0-0' }}%</span>
+        </div>
+        <p class="description">
+          I punti blu si spostano gradualmente verso le loro nuove posizioni rosa, 
+          seguendo le linee tratteggiate. Questa è l'azione della funzione di attivazione!
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<div class="advisor-panel">
+  <div class="advisor-header" (click)="toggleExpand()">
+    <span class="header-icon">📋</span>
+    <span class="header-title">Task Advisor</span>
+    <span class="header-badge" *ngIf="selectedTask && selectedPattern">
+      {{getTaskName(selectedTask)}} + {{getPatternName(selectedPattern)}}
+    </span>
+    <span class="header-arrow">{{expanded ? '▼' : '▶'}}</span>
+  </div>
+
+  <div class="advisor-content" *ngIf="expanded">
+    <div class="selection-row">
+      <!-- Selezione Task -->
+      <div class="selector">
+        <label>🎯 Task type:</label>
+        <div class="option-grid small">
+          <div class="option-card" 
+               *ngFor="let task of tasks"
+               [class.selected]="selectedTask === task.value"
+               (click)="selectTask(task.value)">
+            <span class="option-icon">{{task.icon}}</span>
+            <span class="option-name">{{task.name}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selezione Pattern Dati -->
+      <div class="selector">
+        <label>📊 Data pattern:</label>
+        <div class="option-grid small">
+          <div class="option-card" 
+               *ngFor="let pattern of dataPatterns"
+               [class.selected]="selectedPattern === pattern.value"
+               (click)="selectPattern(pattern.value)">
+            <span class="option-icon">{{pattern.icon}}</span>
+            <span class="option-name">{{pattern.name}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggerimento -->
+    <div class="suggestion-card" *ngIf="currentSuggestion">
+      <div class="suggestion-header">
+        <span class="suggestion-icon">💡</span>
+        <span class="suggestion-title">Recommended Configuration</span>
+      </div>
+
+      <div class="config-badge" (click)="applySuggestion()">
+        <span class="config-item">
+          <span class="config-label">Activation:</span>
+          <span class="config-value" [style.background]="getActivationColor(currentSuggestion.activation)">
+            {{getActivationName(currentSuggestion.activation)}}
+          </span>
+        </span>
+        <span class="config-item">
+          <span class="config-label">Weight:</span>
+          <span class="config-value">{{currentSuggestion.weightHint}}</span>
+        </span>
+        <span class="config-item">
+          <span class="config-label">Bias:</span>
+          <span class="config-value">{{currentSuggestion.biasHint}}</span>
+        </span>
+        <span class="apply-hint">(click to apply)</span>
+      </div>
+
+      <p class="explanation">{{currentSuggestion.explanation}}</p>
+      
+      <div class="why-works">
+        <strong>🔍 Why this works:</strong>
+        <p>{{currentSuggestion.whyThisWorks}}</p>
+      </div>
+
+      <div class="architecture">
+        <strong>🏗️ Typical architecture:</strong>
+        <ul>
+          <li *ngFor="let layer of currentSuggestion.architecture">{{layer}}</li>
+        </ul>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <strong>✅ Pros:</strong>
+          <ul>
+            <li *ngFor="let pro of currentSuggestion.pros">{{pro}}</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <strong>⚠️ Cons:</strong>
+          <ul>
+            <li *ngFor="let con of currentSuggestion.cons">{{con}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-suggestion" *ngIf="!currentSuggestion">
+      <p>👆 Select task and data pattern to see recommendations</p>
+    </div>
+  </div>
+</div>
